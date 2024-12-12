@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
+import 'dart:html' as html;
 
 class UserProfilePage extends StatefulWidget {
   final String username;
@@ -77,16 +78,22 @@ class _UserProfilePageState extends State<UserProfilePage> {
           TextButton(
             onPressed: () async {
               String newUsername = usernameController!.text;
-              await Dio().post('http://localhost:80/update_user.php',
-                  data: FormData.fromMap({
-                    'username': newUsername,
-                    'id': user.id,
-                  }));
-              await _fetchUsers();
-
-              Navigator.of(context).pop();
+              try {
+                Response response =
+                    await Dio().post('http://localhost:80/update_user.php',
+                        data: FormData.fromMap({
+                          'username': newUsername,
+                          'id': user.id,
+                        }));
+                await _fetchUsers();
+                if (response.data['success']) {
+                  Navigator.of(context).pop();
+                }
+              } catch (e) {
+                html.window.alert('Username $newUsername already exist.');
+              }
             },
-            child: const Text('Save'),
+            child: Text('Save'),
           ),
         ],
       ),
