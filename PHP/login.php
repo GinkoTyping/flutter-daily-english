@@ -23,6 +23,8 @@ try {
     if (!$user || !password_verify($password, $user['password'])) {
         $response['success'] = false;
         $response['message'] = 'Username or password is wrong!';
+    } else {
+        $response['id'] = $user['id'];
     }
 
     echo json_encode($response);

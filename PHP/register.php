@@ -1,5 +1,6 @@
 <?php
 header('Access-Control-Allow-Origin: *');
+header('Content-Type: application/json');
 
 $username = isset($_POST['username']) ? $_POST['username'] : '';
 $password = isset($_POST['password']) ? $_POST['password'] : '';
@@ -18,7 +19,8 @@ try {
 
     $response = [
         'success' => true,
-        'message' => 'Register successfully.'
+        'message' => 'Register successfully.',
+        'id' => '',
     ];
 
     if ($IsExisted) {
@@ -33,7 +35,10 @@ try {
         $stmt->bindParam(':username', $username);
         $stmt->bindParam(':password', $hashedPassword);
         $stmt->execute();
+        $userId = $db->lastInsertId();
+
         http_response_code(200);
+        $response['id'] = $userId;
         echo json_encode($response);
     }
 } catch (PDOException $e) {

@@ -4,6 +4,8 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 
+import 'home.dart';
+
 void main() {
   runApp(const MyApp());
 }
@@ -70,14 +72,17 @@ class _LoginScreenState extends State<LoginScreen> {
         setState(() {
           _response = response.data['message'];
         });
-
+        if (response.data['success']) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => UserProfilePage(username: _username, id: response.data['id'])),
+          );
+        }
         // 根据响应数据做进一步处理，比如导航到另一个页面
       } catch (e) {
         if (e is DioError && e.type == DioErrorType.response) {
-          String data = e.response?.data.toString() ?? '';
-          Map<String, dynamic> dataMap = jsonDecode(data);
           setState(() {
-            _response = 'Error: ${dataMap['message']}';
+            _response = 'Error: ${e.response?.data['message']}';
           });
         } else {
           setState(() {
@@ -144,10 +149,10 @@ class _LoginScreenState extends State<LoginScreen> {
                   const SizedBox(width: 20),
                   ElevatedButton(
                     onPressed: _submit,
-                    child: Text(_formTitle),
                     style: ButtonStyle(
                         backgroundColor:
                             WidgetStateProperty.all(Colors.blue[100])),
+                    child: Text(_formTitle),
                   ),
                 ],
               ),
