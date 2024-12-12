@@ -1,31 +1,36 @@
 <?php
 header('Access-Control-Allow-Origin: *');
+header('Content-Type: application/json');
 
 // 接收POST请求的数据
 $username = isset($_POST['username']) ? $_POST['username'] : '';
 $password = isset($_POST['password']) ? $_POST['password'] : '';
 
-// 模拟的用户数据（实际中应该从数据库中获取）
-$valid_credentials = [
-    '1' => '1'
-];
-
 $response = [
-    'success' => false,
-    'message' => 'Invalid credentials'
+    'success' => true,
+    'message' => 'Login successfully.'
 ];
 
-// 检查凭据是否有效
-if (isset($valid_credentials[$username]) && $valid_credentials[$username] === $password) {
-    $response['success'] = true;
-    $response['message'] = 'Login successful';
-    // 可以在这里添加其他信息，比如用户的ID或角色
-    // $response['user_id'] = 1;
-    // $response['role'] = 'admin';
+try {
+    $db = require 'db.php';
+    $checkUserSql = "SELECT * FROM users WHERE username = :username";
+    $checkUserStmt = $db->prepare($checkUserSql);
+    $checkUserStmt->bindParam(':username', $username);
+    $checkUserStmt->execute();
+
+    // 获取查询结果
+    $user = $checkUserStmt->fetch(PDO::FETCH_ASSOC);
+    if (!$user || !password_verify($password, $user['password'])) {
+        $response['success'] = false;
+        $response['message'] = 'Username or password is wrong!';
+    }
+
+    echo json_encode($response);
+} catch (PDOException $e) {
+    http_response_code(500);
+    $response['success'] = false;
+    $response['message'] = "Database error：" . $e->getMessage();
+
+    echo json_encode($response);
 }
-
-// 将响应数据编码为JSON格式并输出
-//echo json_encode($data);
-
-echo json_encode($response);
 ?>

@@ -66,9 +66,9 @@ class _LoginScreenState extends State<LoginScreen> {
               'username': _username,
               'password': _password,
             }));
-        Map<String, dynamic> dataMap = jsonDecode(response.data);
+
         setState(() {
-          _response = dataMap['message'];
+          _response = response.data['message'];
         });
 
         // 根据响应数据做进一步处理，比如导航到另一个页面

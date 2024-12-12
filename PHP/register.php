@@ -26,7 +26,6 @@ try {
         $response['success'] = false;
         $response['message'] = "username: '" . $username . "' is not valid.";
         echo json_encode($response);
-        exit;
     } else {
         // SQL
         $sql = "INSERT INTO users (username, password) VALUES (:username, :password)";
@@ -39,6 +38,8 @@ try {
     }
 } catch (PDOException $e) {
     http_response_code(500);
-    echo "Database error：" . $e->getMessage();
+    $response['success'] = false;
+    $response['message'] = "Database error：" . $e->getMessage();
+    echo json_encode($response);
 }
 ?>
