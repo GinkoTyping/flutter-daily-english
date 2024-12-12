@@ -16,9 +16,16 @@ try {
     $checkUserStmt->execute();
     $IsExisted = $checkUserStmt->fetchColumn() > 0;
 
+    $response = [
+        'success' => true,
+        'message' => 'Register successfully.'
+    ];
+
     if ($IsExisted) {
         http_response_code(400);
-        echo "username: '" . $username . "' is not valid.";
+        $response['success'] = false;
+        $response['message'] = "username: '" . $username . "' is not valid.";
+        echo json_encode($response);
         exit;
     } else {
         // SQL
@@ -28,7 +35,7 @@ try {
         $stmt->bindParam(':password', $hashedPassword);
         $stmt->execute();
         http_response_code(200);
-        echo "Register Successfully.";
+        echo json_encode($response);
     }
 } catch (PDOException $e) {
     http_response_code(500);

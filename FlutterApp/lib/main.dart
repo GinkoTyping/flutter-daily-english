@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
@@ -60,22 +61,23 @@ class _LoginScreenState extends State<LoginScreen> {
       String url = _isLogin ? 'login.php' : 'register.php';
 
       try {
-        Response response =
-            await Dio().post('http://localhost:80/$url',
-                data: FormData.fromMap({
-                  'username': _username,
-                  'password': _password,
-                }));
-
+        Response response = await Dio().post('http://localhost:80/$url',
+            data: FormData.fromMap({
+              'username': _username,
+              'password': _password,
+            }));
+        Map<String, dynamic> dataMap = jsonDecode(response.data);
         setState(() {
-          _response = response.data.toString();
+          _response = dataMap['message'];
         });
 
         // 根据响应数据做进一步处理，比如导航到另一个页面
       } catch (e) {
         if (e is DioError && e.type == DioErrorType.response) {
+          String data = e.response?.data.toString() ?? '';
+          Map<String, dynamic> dataMap = jsonDecode(data);
           setState(() {
-            _response = 'Error: ${e.response?.data}';
+            _response = 'Error: ${dataMap['message']}';
           });
         } else {
           setState(() {
@@ -144,8 +146,8 @@ class _LoginScreenState extends State<LoginScreen> {
                     onPressed: _submit,
                     child: Text(_formTitle),
                     style: ButtonStyle(
-                        backgroundColor: WidgetStateProperty.all(Colors.blue[100])
-                    ),
+                        backgroundColor:
+                            WidgetStateProperty.all(Colors.blue[100])),
                   ),
                 ],
               ),
