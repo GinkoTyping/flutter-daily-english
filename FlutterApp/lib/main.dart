@@ -36,6 +36,8 @@ class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
   String _username = '';
   String _password = '';
+  String _confirmPassword = '';
+
   String _response = '';
 
   String _formTitle = 'Login';
@@ -57,8 +59,8 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void _submit() async {
+    _formKey.currentState!.save();
     if (_formKey.currentState!.validate()) {
-      _formKey.currentState!.save();
 
       String url = _isLogin ? 'login.php' : 'register.php';
 
@@ -75,7 +77,9 @@ class _LoginScreenState extends State<LoginScreen> {
         if (response.data['success']) {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => UserProfilePage(username: _username, id: response.data['id'])),
+            MaterialPageRoute(
+                builder: (context) => UserProfilePage(
+                    username: _username, id: response.data['id'])),
           );
         }
       } catch (e) {
@@ -137,6 +141,24 @@ class _LoginScreenState extends State<LoginScreen> {
                   _password = value!;
                 },
               ),
+              if (!_isLogin)
+                TextFormField(
+                  decoration:
+                      const InputDecoration(labelText: 'Confirm Password'),
+                  obscureText: true,
+                  validator: (value) {
+                    print('$value, $_password');
+                    if (value == null || value.isEmpty) {
+                      return 'Please confirm your password.';
+                    } else if (value != _password) {
+                      return 'Passwords do not match.';
+                    }
+                    return null;
+                  },
+                  onSaved: (value) {
+                    _confirmPassword = value!;
+                  },
+                ),
               const SizedBox(height: 20),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
