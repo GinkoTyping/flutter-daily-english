@@ -18,7 +18,6 @@ try {
     $checkUserStmt->bindParam(':username', $username);
     $checkUserStmt->execute();
 
-    // 获取查询结果
     $user = $checkUserStmt->fetch(PDO::FETCH_ASSOC);
     if (!$user || !password_verify($password, $user['password'])) {
         $response['success'] = false;

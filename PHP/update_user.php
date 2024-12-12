@@ -12,9 +12,8 @@ $response = [
 ];
 
 try {
-    $db = require 'db.php';  // 确保这个文件包含了数据库连接信息，并返回了一个 PDO 实例
+    $db = require 'db.php';
 
-    // 修改 SQL 查询以获取所有用户
     $updateUserSql = "UPDATE users SET username = :username WHERE id = :id";
     $updateUserStmt = $db->prepare($updateUserSql);
     $updateUserStmt->bindParam(':username', $username);

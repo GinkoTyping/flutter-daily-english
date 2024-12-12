@@ -78,7 +78,6 @@ class _LoginScreenState extends State<LoginScreen> {
             MaterialPageRoute(builder: (context) => UserProfilePage(username: _username, id: response.data['id'])),
           );
         }
-        // 根据响应数据做进一步处理，比如导航到另一个页面
       } catch (e) {
         if (e is DioError && e.type == DioErrorType.response) {
           setState(() {

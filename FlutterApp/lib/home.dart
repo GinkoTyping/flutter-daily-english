@@ -112,7 +112,10 @@ class _UserProfilePageState extends State<UserProfilePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Welcome! User ${widget.username}'),
+        title: Text(
+          'Welcome! User ${widget.username} ~powered by Li Hongyao(230345754)',
+          style: TextStyle(fontSize: 16, color: Colors.grey),
+        ),
       ),
       body: Padding(
           padding: const EdgeInsets.all(8.0),
