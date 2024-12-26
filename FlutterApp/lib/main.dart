@@ -37,6 +37,7 @@ class _LoginScreenState extends State<LoginScreen> {
   String _username = '';
   String _password = '';
   String _confirmPassword = '';
+  bool _isAdmin = false;
 
   String _response = '';
 
@@ -61,7 +62,6 @@ class _LoginScreenState extends State<LoginScreen> {
   void _submit() async {
     _formKey.currentState!.save();
     if (_formKey.currentState!.validate()) {
-
       String url = _isLogin ? 'login.php' : 'register.php';
 
       try {
@@ -69,6 +69,7 @@ class _LoginScreenState extends State<LoginScreen> {
             data: FormData.fromMap({
               'username': _username,
               'password': _password,
+              'isAdmin': _isAdmin,
             }));
 
         setState(() {
@@ -158,6 +159,21 @@ class _LoginScreenState extends State<LoginScreen> {
                   onSaved: (value) {
                     _confirmPassword = value!;
                   },
+                ),
+              const SizedBox(height: 20),
+              if (!_isLogin)
+                Row(
+                  children: <Widget>[
+                    const Text('Is Admin'),
+                    Checkbox(
+                      value: _isAdmin,
+                      onChanged: (newValue) {
+                        setState(() {
+                          _isAdmin = newValue!;
+                        });
+                      },
+                    ),
+                  ],
                 ),
               const SizedBox(height: 20),
               Row(

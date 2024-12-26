@@ -12,10 +12,11 @@ class UserProfilePage extends StatefulWidget {
 }
 
 class User {
+  final int index;
   final String id;
   final String username;
 
-  User({required this.id, required this.username});
+  User({required this.id, required this.username, required this.index});
 }
 
 class _UserProfilePageState extends State<UserProfilePage> {
@@ -35,10 +36,12 @@ class _UserProfilePageState extends State<UserProfilePage> {
 
       // 假设响应是一个用户对象的数组
       List<dynamic> responseData = response.data['data'];
+      int index = 0;
       List<User> fetchedUsers = responseData
           .map((user) => User(
                 id: user['id'].toString(),
                 username: user['username'] as String,
+                index: index++,
               ))
           .toList();
 
@@ -122,13 +125,13 @@ class _UserProfilePageState extends State<UserProfilePage> {
           child: SingleChildScrollView(
             child: DataTable(
               columns: const [
-                DataColumn(label: Text('ID')),
+                DataColumn(label: Text('Index')),
                 DataColumn(label: Text('Username')),
                 DataColumn(label: Text('Actions')),
               ],
               rows: users
                   .map((user) => DataRow(cells: [
-                        DataCell(Text(user.id)),
+                        DataCell(Text(user.index.toString())),
                         DataCell(Text(user.username)),
                         DataCell(Row(
                           children: [

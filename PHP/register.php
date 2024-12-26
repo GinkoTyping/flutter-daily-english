@@ -4,6 +4,8 @@ header('Content-Type: application/json');
 
 $username = isset($_POST['username']) ? $_POST['username'] : '';
 $password = isset($_POST['password']) ? $_POST['password'] : '';
+$isAdmin = isset($_POST['isAdmin']) ? $_POST['isAdmin'] : false;
+$role = $isAdmin ? 1 : 0;
 
 // 对密码进行加密
 $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
@@ -30,10 +32,11 @@ try {
         echo json_encode($response);
     } else {
         // SQL
-        $sql = "INSERT INTO users (username, password) VALUES (:username, :password)";
+        $sql = "INSERT INTO users (username, password, role) VALUES (:username, :password, :role)";
         $stmt = $db->prepare($sql);
         $stmt->bindParam(':username', $username);
         $stmt->bindParam(':password', $hashedPassword);
+        $stmt->bindParam(':role', $role);
         $stmt->execute();
         $userId = $db->lastInsertId();
 
